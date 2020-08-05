@@ -26,9 +26,9 @@ app.use(requestIp.mw());
 // We set this folder to the standard /public:
 app.use(express.static("public"));
 
-const mongodbUrl  =  'mongodb+srv://developer:Admin123@cluster0.9bac1.mongodb.net/admin?retryWrites=true&w=majority';
+const mongodbUrl  =  `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.9bac1.mongodb.net/admin?retryWrites=true&w=majority`;
     
-console.log('url', process.env);
+console.log('url', mongodbUrl);
 
 mongoose.connect(mongodbUrl, {
  useNewUrlParser: true,
