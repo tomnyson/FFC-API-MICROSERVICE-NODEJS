@@ -3,6 +3,7 @@
 // To get our microservice API project underway, we need to set up express.js.
 // To do so, we'll require it as a dependency (node.js will look in package.json to find which version we want to use)...
 const express = require("express");
+const mongoose = require("mongoose");
 // ... though now set a variable, to actually use the express dependency, we also need to define our express app by expressing it as a function:
 const app = express();
 
@@ -24,6 +25,22 @@ app.use(requestIp.mw());
 // AS SET UP IN THE FREECODECAMP BOILERPLATE, In order to serve static files such as images, CSS files, and JavaScript files, we can use the express.static built-in middleware function in Express.
 // We set this folder to the standard /public:
 app.use(express.static("public"));
+
+const mongodbUrl  =  'mongodb+srv://developer:Admin123@cluster0.9bac1.mongodb.net/admin?retryWrites=true&w=majority';
+    
+console.log('url', process.env);
+
+mongoose.connect(mongodbUrl, {
+ useNewUrlParser: true,
+ useUnifiedTopology: true,
+ serverSelectionTimeoutMS: 5000 // Timeout after 5s instead of 30s
+});
+
+const connection = mongoose.connection;
+connection.on('error', console.error.bind(console, 'ConnetFailed'));
+connection.once('open', () => {
+ console.log("MongoDB Connecting");
+})
 
 // AS SET UP IN THE FREECODECAMP BOILERPLATE, we'll also do a bit more basic setup for our project so that any client requests for the root endpoint/route (i.e. / ) is handled by returning the index page:
 app.get("/", function(req, res) {
