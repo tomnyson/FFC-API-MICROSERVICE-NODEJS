@@ -4,7 +4,7 @@
 // To do so, we'll require it as a dependency (node.js will look in package.json to find which version we want to use)...
 const express = require("express");
 const mongoose = require("mongoose");
-var linkRouter = require('./routers/link.router.js');
+var linkRouter = require('./routes/link.router.js');
 // ... though now set a variable, to actually use the express dependency, we also need to define our express app by expressing it as a function:
 const app = express();
 
