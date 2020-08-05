@@ -5,7 +5,7 @@
 // but feel free to use whatever libraries or frameworks you'd like through `package.json`.
 const express = require("express");
 const app = express();
-
+const moment = require("moment");
 // our default array of dreams
 const dreams = [
   "Find and count some sheep",
@@ -19,31 +19,30 @@ app.use(express.static("public"));
 
 // https://expressjs.com/en/starter/basic-routing.html
 app.get("/", (request, response) => {
-  response.sendFile(__dirname + "/views/index.html");
+  response.json({
+    unix: new Date().getTime(),
+    utc: new Date().toUTCString()
+  });
 });
 
-// send the default array of dreams to the webpage
-app.get("/dreams", (request, response) => {
-  // express helps us take JS objects and send them as JSON
-  response.json(dreams);
-});
+app.get("/api/timestamp/:date?", (request, response) => {
+  const date = request.params.date;
 
-app.get("/api/timestamp/:date_string?", (request, response) => {
-  const { date_string } = request.params;
-  let date;
-  if (!date_string) {
-    date = new Date();
+  if (!isNaN(date)) {
+    response.json({
+      unix: new Date(parseInt(date)).getTime(),
+      utc: new Date(parseInt(date)).toUTCString()
+    });
+  } else if (moment.utc(date, "YYYY-M-D", true).isValid()) {
+    response.json({
+      unix: new Date(date).getTime(),
+      utc: new Date(date).toUTCString()
+    });
   } else {
-    if (!isNaN(date_string)) {
-      date = new Date(parseInt(date_string));
-    } else {
-      date = new Date(date_string);
-    }
-  }
-  if (date.toString() === "Invalid Date") {
-    response.json({ error: date.toString() });
-  } else {
-    response.json({ unix: date.getTime(), utc: date.toUTCString() });
+    response.json({
+      unix: new Date(parseInt(date)).getTime(),
+      utc: new Date(parseInt(date)).toUTCString()
+    });
   }
 });
 
