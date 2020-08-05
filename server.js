@@ -4,6 +4,7 @@
 // To do so, we'll require it as a dependency (node.js will look in package.json to find which version we want to use)...
 const express = require("express");
 const mongoose = require("mongoose");
+var linkRouter = require('./routers/link.router.js');
 // ... though now set a variable, to actually use the express dependency, we also need to define our express app by expressing it as a function:
 const app = express();
 
@@ -94,8 +95,8 @@ app.get("/api/timestamp/:date_string", (req, res) => {
     res.json({ unix: dateObject.valueOf(), utc: dateObject.toUTCString() });
   }
 });
-
-
+/*import router part*/
+app.use('/api/shorturl', linkRouter);
 
 // AS SET UP IN THE FREECODECAMP BOILERPLATE, we also need to set up our server to listen for requests. This makes sure that our webapp/api is responding to requests and therefore "live".
 // Note that this listener is placed at the end of Express projects (and the requirement for express.js is always placed at the beginning of the code).
