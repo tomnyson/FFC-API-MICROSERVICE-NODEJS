@@ -103,3 +103,10 @@ app.use('/api/shorturl', linkRouter);
 const listener = app.listen(process.env.PORT, function() {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
+process.on('SIGINT', function(){
+    mongoose.connection.close(function(){
+      console.log("Mongoose default connection is disconnected due to application termination");
+       process.exit(0);
+      });
+});
