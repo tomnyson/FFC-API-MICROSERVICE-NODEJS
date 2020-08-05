@@ -29,21 +29,21 @@ app.get("/dreams", (request, response) => {
 });
 
 app.get("/api/timestamp/:date_string?", (request, response) => {
-  const { dateString } = request.pramas;
+  const { date_string } = request.params;
   let date;
-  if (!dateString) {
+  if (!date_string) {
     date = new Date();
   } else {
-    if (!isNaN(dateString)) {
-      date = new Date(parseInt(dateString));
+    if (!isNaN(date_string)) {
+      date = new Date(parseInt(date_string));
     } else {
-      date = new Date(dateString);
+      date = new Date(date_string);
     }
   }
-  if (date.toString() == "Invalid Date") {
-    response.json({ error: "Invalid Date" });
+  if (date.toString() === "Invalid Date") {
+    response.json({ error: date.toString() });
   } else {
-    response.json({ unix: date.getTime(), utc: date.ToUTCString() });
+    response.json({ unix: date.getTime(), utc: date.toUTCString() });
   }
 });
 
