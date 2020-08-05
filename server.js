@@ -28,6 +28,25 @@ app.get("/dreams", (request, response) => {
   response.json(dreams);
 });
 
+app.get("/api/timestamp/:date_string?", (request, response) => {
+  const { dateString } = request.pramas;
+  let date;
+  if (!dateString) {
+    date = new Date();
+  } else {
+    if (!isNaN(dateString)) {
+      date = new Date(parseInt(dateString));
+    } else {
+      date = new Date(dateString);
+    }
+  }
+  if (date.toString() == "Invalid Date") {
+    response.json({ error: "Invalid Date" });
+  } else {
+    response.json({ unix: date.getTime(), utc: date.ToUTCString() });
+  }
+});
+
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
