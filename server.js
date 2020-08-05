@@ -37,54 +37,29 @@ app.get("/api/hello", function (req, res) {
 });
 
 
-
-// According to the user stories, if our API isn't given a date query, we should return the current timestamp. To do so, we'll have the "empty endpoint" of .../timestamp redirect to .../timestamp/<current_date_string>:
-app.get("/api/timestamp", function(req, res) {
-  // We'll save the current timestamp as a Date object...
-  let newDate = new Date();
-  // ... then we'll redirect to the correct endpoint, adding the date to the end of the URL:
-  // A 302 HTTP status code, also known as "Found", is used when the Web page is temporarily not available for reasons that have not been unforeseen. That way, search engines don't update their links.
-  // NB: If we don't specify a redirect type, express.js defaults to "302 Found". For clarity, we add the 302 here:
-  res.redirect(302, "/api/timestamp/" + newDate.getFullYear() + "-" + (newDate.getUTCMonth() + 1) + "-" + newDate.getUTCDate() );    // NB: Date object months are zero-indexed, so we add 1 to the month value of our date query.
+app.get("/api/timestamp/", (req, res) => {
+  res.json({ unix: Date.now(), utc: Date() });
 });
 
-
-
-// Whenever the user makes a query to the API, we need to return the unix date and the utc date in a JSON array:
-app.get("/api/timestamp/:dateReq", function(req, res) {
-  // We'll start by setting up a variable...
-  const {dateReq} = req.params
-  let date;
-  if(dateReq) {
-    res.json({
-    "unix": new Date().getTime(),
-    "utc": null
-  });
+app.get("/api/timestamp/:date_string", (req, res) => {
+  let dateString = req.params.date_string;
+  let dateInt;
+  //A 4 digit number is a valid ISO-8601 for the beginning of that year
+  //5 digits or more must be a unix time, until we reach a year 10,000 problem
+  if (/\d{5,}/.test(dateString)) {
+    dateInt = parseInt(dateString);
+    //Date regards numbers as unix timestamps, strings are processed differently
+    res.json({ unix: dateString, utc: new Date(dateInt).toUTCString() });
   }
-  
-  if ( /\D/.test(req.params.dateReq) ) {
-    date = new Date( req.params.dateReq );
+
+  let dateObject = new Date(dateString);
+  console.log('dateObject.toString() ',dateObject.toString() )
+  if (dateObject.toString() === "Invalid Date") {
+    res.json({error: 'Invalid Date'});
+  } else {
+    res.json({ unix: dateObject.valueOf(), utc: dateObject.toUTCString() });
   }
-  else {
-    date = new Date( parseInt(req.params.dateReq) );
-  };
-  
-    
-  // At the time of coding this API, the user stories on freeCodeCamp.org and in the GitHub/boilerplate have different demands for how to handle invalid date queries.
-  // If using the freeCodeCamp.org user stories, we would need to account for invalid dates as follows:
-  if (date == "Invalid Date") return res.json( {"error": "Invalid Date" } );
-  
-  let utcDate = date.toUTCString();  // to get a pretty string of text for the given date, in UTC format
-  let unixDate = date.getTime();     // to get time in milliseconds since the start of epoch time
-  
-  // Finally, we return a JSON object as a response:
-  res.json({
-    "unix": unixDate,
-    "utc": utcDate
-  });
-  
 });
-
 
 
 
