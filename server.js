@@ -36,7 +36,7 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-
+/*api time tracker*/
 app.get("/api/timestamp/", (req, res) => {
   res.json({ unix: Date.now(), utc: Date() });
 });
@@ -61,6 +61,20 @@ app.get("/api/timestamp/:date_string", (req, res) => {
   }
 });
 
+/*api whoim*/
+
+app.get("api/whoami", (req, res) => {
+  /* 
+  "ipaddress":"159.20.14.100","language":"en-US,en;q=0.5",
+"software":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0"} 
+*/
+  const data = {
+    ipaddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+    language: req.headers["accept-language"],
+    software: req.header.browser
+  }
+  
+});
 
 
 // AS SET UP IN THE FREECODECAMP BOILERPLATE, we also need to set up our server to listen for requests. This makes sure that our webapp/api is responding to requests and therefore "live".
