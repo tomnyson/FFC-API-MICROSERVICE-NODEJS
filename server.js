@@ -52,7 +52,7 @@ connection.once("open", () => {
 // AS SET UP IN THE FREECODECAMP BOILERPLATE, we'll also do a bit more basic setup for our project so that any client requests for the root endpoint/route (i.e. / ) is handled by returning the index page:
 app.get("/", function(req, res) {
   // When our api gets a request for the root folder, the request is handled by responding with the URL for our index.html endpoint:
-  res.sendFile(__dirname + "/views/index.html");
+  res.sendFile(__dirname + "/views/tracker.html");
 });
 
 app.get("/tracker", function(req, res) {

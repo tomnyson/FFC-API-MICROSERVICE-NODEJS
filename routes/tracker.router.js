@@ -4,7 +4,7 @@ var validUrl = require("valid-url");
 const shortId = require("shortid");
 const User = require("../models/user.model.js");
 
-router.post("/new", async (req, res) => {
+router.post("/new-user", async (req, res) => {
   const {username} = req.body
   
   User.findOne({username}, (err, user) => {
@@ -18,19 +18,57 @@ router.post("/new", async (req, res) => {
   });
 });
 
-router.get("/:short_url?", async function(req, res) {
-  try {
-    const urlParams = await URL.findOne({
-      short_url: req.params.short_url
-    });
-    if (urlParams) {
-      return res.redirect(urlParams.original_url);
-    } else {
-      return res.status(404).json("No URL found");
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500).json("Server error");
-  }
+router.get('/users', (req, res) => {
+  User.find()
+    .then(docs => {
+      res.json(docs);
+    })
+    .catch(err => res.json(err) );
 });
+
+router.post('/add', (req, res) => {
+  let date;
+  if(req.body.date){
+    date = req.body.date;
+  } else {
+    date = new Date();
+  }
+
+  const logger = {
+    description: req.body.description, 
+    duration: req.body.duration, 
+    date: date
+  };
+
+  User.findByIdAndUpdate(req.body.userId, {$push: { log: logger}}, {new: true}).exec()
+    .then( user => res.json({id: user.id, username: user.username, log: user.log[user.log.length-1]}))
+    .catch( err => res.json(err) );
+});
+
+
+router.get('/log', (req, res) => {
+  User.findById(req.query.userId).exec()
+  .then( user => {
+    let newLog = user.log;
+    if (req.query.from){
+      newLog = newLog.filter( x =>  x.date.getTime() > new Date(req.query.from).getTime() );
+    }
+    if (req.query.to){
+      newLog = newLog.filter( x => x.date.getTime() < new Date(req.query.to).getTime());
+    }
+    if (req.query.limit){
+      newLog = newLog.slice(0, req.query.limit > newLog.length ? newLog.length : req.query.limit);
+    }
+    user.log = newLog;
+    let temp = user.toJSON();
+    temp['count'] = newLog.length;
+
+    return temp;
+  })
+  .then( result => res.json(result))
+  .catch(err => res.json(err));
+    
+});
+
+
 module.exports = router;
