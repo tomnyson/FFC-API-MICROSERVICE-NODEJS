@@ -6,7 +6,8 @@ const URL = require("../models/link.model.js");
 
 
 router.get("/", async (req, res) => {
- res.sendFile(__dirname + "/views/tracker.html");
+  console.log('hahahh')
+ // res.sendFile(__dirname + "views/tracker.html");
 });
 
 router.get("/:short_url?", async function(req, res) {
