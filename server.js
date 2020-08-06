@@ -55,7 +55,7 @@ app.get("/", function(req, res) {
   res.sendFile(__dirname + "/views/index.html");
 });
 
-app.get("/exercise", function(req, res) {
+app.get("/tracker", function(req, res) {
   res.sendFile(__dirname + "/views/tracker.html");
 });
 

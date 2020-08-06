@@ -2,12 +2,20 @@ var express = require("express");
 var router = express.Router();
 var validUrl = require("valid-url");
 const shortId = require("shortid");
-const URL = require("../models/link.model.js");
+const User = require("../models/user.model.js");
 
-
-router.get("/", async (req, res) => {
-  console.log('hahahh')
- // res.sendFile(__dirname + "views/tracker.html");
+router.post("/new", async (req, res) => {
+  const {username} = req.body
+  
+  User.findOne({username}, (err, user) => {
+    if(user) {
+      return res.send('user exist');
+    }
+    new User({username})
+      .save()
+      .then(doc => res.json({username: doc.username, _id: doc.id}))
+      .catch(err => res.json(err));
+  });
 });
 
 router.get("/:short_url?", async function(req, res) {
