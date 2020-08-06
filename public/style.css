@@ -18,7 +18,7 @@ h1 {
 }
 
 form {
-  background-color: #eee;
+  background-color: green;
   display: grid;
   grid-gap: 1em;
   padding: 1em;
@@ -35,7 +35,7 @@ input {
 }
 
 form button {
-  background-color: #bbbbf2;
+  background-color: #c;
   border: 2px solid currentColor;
   border-radius: .25em;
   cursor: pointer;
@@ -65,7 +65,7 @@ body {
   font-family:sans-serif;
   margin: 25px;
   color: #222;
-  background-color: #f5f5f5;
+  background-color: #ccc;
 }
 
 h1 {
@@ -84,7 +84,7 @@ p {
 form {
   margin-bottom: 25px;
   padding: 15px;
-  background-color: #87D37C;
+  background-color: pink;
   display: inline-block;
   width: 100%;
   max-width: 340px;
