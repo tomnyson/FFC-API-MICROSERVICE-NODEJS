@@ -27,6 +27,7 @@ router.get('/users', (req, res) => {
 });
 
 router.post('/add', (req, res) => {
+  // because the date is optionally, we need to test whether date is there or not
   let date;
   if(req.body.date){
     date = req.body.date;
@@ -34,12 +35,14 @@ router.post('/add', (req, res) => {
     date = new Date();
   }
 
+  // create the excercise which will be save
   const logger = {
     description: req.body.description, 
     duration: req.body.duration, 
     date: date
   };
-
+  console.log('logger',logger)
+  // finally we find the user by his id and we update him
   User.findByIdAndUpdate(req.body.userId, {$push: { log: logger}}, {new: true}).exec()
     .then( user => res.json({id: user.id, username: user.username, log: user.log[user.log.length-1]}))
     .catch( err => res.json(err) );
