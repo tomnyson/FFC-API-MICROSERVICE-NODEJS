@@ -29,7 +29,7 @@ router.get('/users', (req, res) => {
 router.post('/add', async (req, res, next) => {
      const userId = req.body.userId;
   const description = req.body.description;
-  const duration = req.body.duration;
+  const duration = Number(req.body.duration);
   const requiredFieldsCompleted = userId && description && duration;
   if(requiredFieldsCompleted){
     User.findById(userId, (error, user) => {
@@ -48,6 +48,7 @@ router.post('/add', async (req, res, next) => {
             duration: duration,
             date: date.toDateString()
           };
+          console.log(dataToShow)
           res.json(dataToShow);
         });
       } else {
