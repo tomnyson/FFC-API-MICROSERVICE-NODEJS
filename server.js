@@ -9,6 +9,7 @@ var linkRouter = require('./routes/link.router.js');
 const app = express();
 
 const requestIp = require("request-ip");
+var bodyParser = require('body-parser')
 // inside middleware handler
 
 // AS SET UP IN THE FREECODECAMP BOILERPLATE, we need to enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) so that our webapp/API is remotely testable by FCC...
@@ -26,8 +27,12 @@ app.use(requestIp.mw());
 // AS SET UP IN THE FREECODECAMP BOILERPLATE, In order to serve static files such as images, CSS files, and JavaScript files, we can use the express.static built-in middleware function in Express.
 // We set this folder to the standard /public:
 app.use(express.static("public"));
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
 
-const mongodbUrl  =  `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.9bac1.mongodb.net/admin?retryWrites=true&w=majority`;
+// parse application/json
+app.use(bodyParser.json())
+const mongodbUrl  =  `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.9bac1.mongodb.net/freecodecamp?retryWrites=true&w=majority`;
     
 console.log('url', mongodbUrl);
 
