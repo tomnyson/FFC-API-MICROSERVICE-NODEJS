@@ -61,7 +61,7 @@ app.get("/tracker", function(req, res) {
 });
 
 app.get("/upload", function(req, res) {
-  res.sendFile(__dirname + "/views/tracker.html");
+  res.sendFile(__dirname + "/views/upload.html");
 });
 
 ///////////////
