@@ -109,6 +109,30 @@ app.get("/api/timestamp/:date_string", (req, res) => {
 app.use("/api/shorturl", linkRouter);
 app.use("/api/exercise", trackerRouter);
 
+// Not found middleware
+app.use((req, res, next) => {
+  return next({status: 404, message: 'not found'})
+})
+
+// Error Handling middleware
+app.use((err, req, res, next) => {
+  let errCode, errMessage
+
+  if (err.errors) {
+    // mongoose validation error
+    errCode = 400 // bad request
+    const keys = Object.keys(err.errors)
+    // report the first validation error
+    errMessage = err.errors[keys[0]].message
+  } else {
+    // generic or custom error
+    errCode = err.status || 500
+    errMessage = err.message || 'Internal Server Error'
+  }
+  res.status(errCode).type('txt')
+    .send(errMessage)
+})
+
 // AS SET UP IN THE FREECODECAMP BOILERPLATE, we also need to set up our server to listen for requests. This makes sure that our webapp/api is responding to requests and therefore "live".
 // Note that this listener is placed at the end of Express projects (and the requirement for express.js is always placed at the beginning of the code).
 const listener = app.listen(process.env.PORT, function() {

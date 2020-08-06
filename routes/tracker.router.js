@@ -26,34 +26,37 @@ router.get('/users', (req, res) => {
     .catch(err => res.json(err) );
 });
 
-router.post('/add', async (req, res) => {
-   const user = await User.findById(req.body.userId);
-  if(!user) {
-    res.send("userId " + req.body.userId + " not found");
-    return;
-  } 
-  const exercise = new User({ 
-    description: req.body.description,
-    duration: req.body.duration
-  });
-  // if a date was provided, set it in the exercise
-  //  otherwise MongoDB will default it to Date.now()
-  if(req.body.date) exercise.date = req.body.date
-  user.log.push(exercise);
-  
-  try {
-    await user.save();
-    // res.json(user);
-    res.json({
-      _id: user._id,
-      username: user.username,
-      description: exercise.description,
-      duration: exercise.duration,
-      date: exercise.date
-    })
-  } catch(e) {
-    console.log(e);
-    res.send("Sorry, there was an error saving the exercise.");
+router.post('/add', async (req, res, next) => {
+     const userId = req.body.userId;
+  const description = req.body.description;
+  const duration = req.body.duration;
+  const requiredFieldsCompleted = userId && description && duration;
+  if(requiredFieldsCompleted){
+    User.findById(userId, (error, user) => {
+      if(error) return next(error);
+      if(user){    
+        const date = (req.body.date) ? new Date(req.body.date) : new Date();
+        user.count = user.count + 1;
+        const newExercise = {description: description, duration: duration, date: date};
+        user.log.push(newExercise);
+        user.save((error, user) => {
+          if(error) return next(error);
+          const dataToShow = { 
+            username: user.username,
+            _id: user._id,
+            description: description,
+            duration: duration,
+            date: date.toDateString()
+          };
+          res.json(dataToShow);
+        });
+      } else {
+        next();
+      }
+    });
+  } else {
+    let message = "Please complete all the required fields.";
+    res.send(message);
   }
 });
 
