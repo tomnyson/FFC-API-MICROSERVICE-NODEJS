@@ -6,6 +6,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 var linkRouter = require("./routes/link.router.js");
 const trackerRouter = require("./routes/tracker.router.js");
+const fileRouter = require("./routes/file.router.js");
 // ... though now set a variable, to actually use the express dependency, we also need to define our express app by expressing it as a function:
 const app = express();
 
@@ -59,6 +60,10 @@ app.get("/tracker", function(req, res) {
   res.sendFile(__dirname + "/views/tracker.html");
 });
 
+app.get("/upload", function(req, res) {
+  res.sendFile(__dirname + "/views/tracker.html");
+});
+
 ///////////////
 // With all the setup done, let's code our our API endpoints as outlined in the user stories for the project:
 ///////////////
@@ -108,6 +113,7 @@ app.get("/api/timestamp/:date_string", (req, res) => {
 /*import router part*/
 app.use("/api/shorturl", linkRouter);
 app.use("/api/exercise", trackerRouter);
+app.use("/api/upload", trackerRouter);
 
 // Not found middleware
 app.use((req, res, next) => {
